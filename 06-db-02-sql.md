@@ -228,8 +228,10 @@ width - средняя ширина строки в байтах
 Ответ:
 
 1. создаем дамп БД в простом текстовом формате
+
 pg_dump -U postgres test_db > /var/lib/postgresql/bckp/dump.sql
 
 2. останавливаем старый контейнер и запускаем новый
 3. заходим в новый контейнер и восстанавливаем данные командой
+
 psql -U postgres test_db -f /var/lib/postgresql/bckp/dump.sql
