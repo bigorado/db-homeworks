@@ -7,6 +7,13 @@
 
 Ответ:
 
+docker run -d --name pg_docker \
+-e POSTGRES_PASSWORD=postgres \
+-p 5432:5432 \
+-v $HOME/docker/volumes/postgres/data:/var/lib/postgresql/data \
+-v $HOME/docker/volumes/postgres/bckp:/var/lib/postgresql/bckp \
+postgres:12
+
 ## Задача 2
 
 В БД из задачи 1: 
@@ -34,6 +41,72 @@
 - список пользователей с правами над таблицами test_db
 
 Ответ:
+=============Список БД=============
+postgres=# \l
+                                    List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |      Access privileges
+-----------+----------+----------+------------+------------+------------------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres                 +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres                 +
+           |          |          |            |            | postgres=CTc/postgres
+ test_db   | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =Tc/postgres                +
+           |          |          |            |            | postgres=CTc/postgres       +
+           |          |          |            |            | test_admin_user=CTc/postgres
+(4 rows)
+=============Описание таблиц=============
+postgres=# \d+ orders
+                                                       Table "public.orders"
+ Column |         Type          | Collation | Nullable |              Default               | Storage  | Stats target | Description
+--------+-----------------------+-----------+----------+------------------------------------+----------+--------------+-------------
+ id     | integer               |           | not null | nextval('orders_id_seq'::regclass) | plain    |              |
+ name   | character varying(30) |           |          |                                    | extended |              |
+ price  | integer               |           |          |                                    | plain    |              |
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "clients" CONSTRAINT "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+Access method: heap
+
+postgres=# \d+ clients
+                                                        Table "public.clients"
+  Column  |         Type          | Collation | Nullable |               Default               | Storage  | Stats target | Description
+----------+-----------------------+-----------+----------+-------------------------------------+----------+--------------+-------------
+ id       | integer               |           | not null | nextval('clients_id_seq'::regclass) | plain    |              |
+ lastname | character varying(30) |           |          |                                     | extended |              |
+ country  | character varying(30) |           |          |                                     | extended |              |
+ order_id | integer               |           |          |                                     | plain    |              |
+Indexes:
+    "clients_pkey" PRIMARY KEY, btree (id)
+    "clients_country_idx" btree (country)
+Foreign-key constraints:
+    "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+Access method: heap
+
+=============Список пользователей и прав=============
+     grantee      | table_catalog | table_name | privilege_type
+------------------+---------------+------------+----------------
+ test_admin_user  | test_db       | clients    | DELETE
+ test_admin_user  | test_db       | orders     | INSERT
+ test_admin_user  | test_db       | orders     | SELECT
+ test_admin_user  | test_db       | orders     | UPDATE
+ test_admin_user  | test_db       | orders     | DELETE
+ test_admin_user  | test_db       | orders     | TRUNCATE
+ test_admin_user  | test_db       | orders     | REFERENCES
+ test_admin_user  | test_db       | orders     | TRIGGER
+ test_admin_user  | test_db       | clients    | INSERT
+ test_admin_user  | test_db       | clients    | SELECT
+ test_admin_user  | test_db       | clients    | UPDATE
+ test_simple_user | test_db       | orders     | SELECT
+ test_simple_user | test_db       | clients    | SELECT
+ test_simple_user | test_db       | clients    | UPDATE
+ test_simple_user | test_db       | clients    | DELETE
+ test_simple_user | test_db       | orders     | INSERT
+ test_simple_user | test_db       | clients    | INSERT
+ test_simple_user | test_db       | orders     | UPDATE
+ test_simple_user | test_db       | orders     | DELETE
+
 
 ## Задача 3
 
@@ -43,21 +116,21 @@
 
 |Наименование|цена|
 |------------|----|
-|Шоколад| 10 |
-|Принтер| 3000 |
-|Книга| 500 |
+|Шоколад| 10  |
+|Принтер| 3000|
+|Книга  | 500 |
 |Монитор| 7000|
-|Гитара| 4000|
+|Гитара | 4000|
 
 Таблица clients
 
 |ФИО|Страна проживания|
 |------------|----|
-|Иванов Иван Иванович| USA |
-|Петров Петр Петрович| Canada |
+|Иванов Иван Иванович| USA   |
+|Петров Петр Петрович| Canada|
 |Иоганн Себастьян Бах| Japan |
-|Ронни Джеймс Дио| Russia|
-|Ritchie Blackmore| Russia|
+|Ронни Джеймс Дио    | Russia|
+|Ritchie Blackmore   | Russia|
 
 Используя SQL синтаксис:
 - вычислите количество записей для каждой таблицы 
@@ -67,6 +140,19 @@
 
 Ответ:
 
+test_db=# SELECT COUNT(*) FROM orders;
+ count
+-------
+     5
+(1 row)
+
+test_db=# SELECT COUNT(*) FROM clients;
+ count
+-------
+     5
+(1 row)
+
+
 ## Задача 4
 
 Часть пользователей из таблицы clients решили оформить заказы из таблицы orders.
@@ -75,8 +161,8 @@
 
 |ФИО|Заказ|
 |------------|----|
-|Иванов Иван Иванович| Книга |
-|Петров Петр Петрович| Монитор |
+|Иванов Иван Иванович| Книга  |
+|Петров Петр Петрович| Монитор|
 |Иоганн Себастьян Бах| Гитара |
 
 Приведите SQL-запросы для выполнения данных операций.
@@ -86,6 +172,25 @@
 Подсказк - используйте директиву `UPDATE`.
 
 Ответ:
+=============Запросы=============
+UPDATE clients
+SET order_id = (SELECT id FROM orders WHERE name = 'Книга')
+WHERE lastname = 'Иванов Иван Иванович';
+UPDATE clients
+SET order_id = (SELECT id FROM orders WHERE name = 'Монитор')
+WHERE lastname = 'Петров Петр Петрович';
+UPDATE clients
+ SET order_id = (SELECT id FROM orders WHERE name = 'Гитара')
+ WHERE lastname = 'Иоганн Себастьян Бах';
+
+SELECT * FROM clients WHERE order_id IS NOT NULL;
+
+ id |      last_name       | country | order_id
+----+----------------------+---------+----------
+  1 | Иванов Иван Иванович | USA     |        3
+  2 | Петров Петр Петрович | Canada  |        4
+  3 | Иоганн Себастьян Бах | Japan   |        5
+(3 rows)
 
 ## Задача 5
 
@@ -95,6 +200,18 @@
 Приведите получившийся результат и объясните что значат полученные значения.
 
 Ответ:
+
+EXPLAIN SELECT * FROM clients WHERE order_id IS NOT NULL;
+
+                         QUERY PLAN
+------------------------------------------------------------
+ Seq Scan on clients  (cost=0.00..12.80 rows=279 width=258)
+   Filter: (order_id IS NOT NULL)
+(2 rows)
+
+cost - стоимость операции
+row - ожидаемое число строк
+width - средняя ширина строки в байтах
 
 ## Задача 6
 
@@ -109,3 +226,10 @@
 Приведите список операций, который вы применяли для бэкапа данных и восстановления. 
 
 Ответ:
+
+1. создаем дамп БД в простом текстовом формате
+pg_dump -U postgres test_db > /var/lib/postgresql/bckp/dump.sql
+
+2. останавливаем старый контейнер и запускаем новый
+3. заходим в новый контейнер и восстанавливаем данные командой
+psql -U postgres test_db -f /var/lib/postgresql/bckp/dump.sql
