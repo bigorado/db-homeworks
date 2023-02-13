@@ -7,12 +7,12 @@
 
 Ответ:
 
-docker run -d --name pg_docker \
--e POSTGRES_PASSWORD=postgres \
--p 5432:5432 \
--v $HOME/docker/volumes/postgres/data:/var/lib/postgresql/data \
--v $HOME/docker/volumes/postgres/bckp:/var/lib/postgresql/bckp \
-postgres:12
+    docker run -d --name pg_docker \
+    -e POSTGRES_PASSWORD=postgres \
+    -p 5432:5432 \
+    -v $HOME/docker/volumes/postgres/data:/var/lib/postgresql/data \
+    -v $HOME/docker/volumes/postgres/bckp:/var/lib/postgresql/bckp \
+    postgres:12
 
 ## Задача 2
 
@@ -60,57 +60,57 @@ postgres:12
 
 #Описание таблиц
 
-postgres=# \d+ orders
-                                                       Table "public.orders"
- Column |         Type          | Collation | Nullable |              Default               | Storage  | Stats target | Description
---------+-----------------------+-----------+----------+------------------------------------+----------+--------------+-------------
- id     | integer               |           | not null | nextval('orders_id_seq'::regclass) | plain    |              |
- name   | character varying(30) |           |          |                                    | extended |              |
- price  | integer               |           |          |                                    | plain    |              |
-Indexes:
-    "orders_pkey" PRIMARY KEY, btree (id)
-Referenced by:
-    TABLE "clients" CONSTRAINT "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
-Access method: heap
+    postgres=# \d+ orders
+                                                           Table "public.orders"
+     Column |         Type          | Collation | Nullable |              Default               | Storage  | Stats target | Description
+    --------+-----------------------+-----------+----------+------------------------------------+----------+--------------+-------------
+     id     | integer               |           | not null | nextval('orders_id_seq'::regclass) | plain    |              |
+     name   | character varying(30) |           |          |                                    | extended |              |
+     price  | integer               |           |          |                                    | plain    |              |
+    Indexes:
+        "orders_pkey" PRIMARY KEY, btree (id)
+    Referenced by:
+        TABLE "clients" CONSTRAINT "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+    Access method: heap
 
-postgres=# \d+ clients
-                                                        Table "public.clients"
-  Column  |         Type          | Collation | Nullable |               Default               | Storage  | Stats target | Description
-----------+-----------------------+-----------+----------+-------------------------------------+----------+--------------+-------------
- id       | integer               |           | not null | nextval('clients_id_seq'::regclass) | plain    |              |
- lastname | character varying(30) |           |          |                                     | extended |              |
- country  | character varying(30) |           |          |                                     | extended |              |
- order_id | integer               |           |          |                                     | plain    |              |
-Indexes:
-    "clients_pkey" PRIMARY KEY, btree (id)
-    "clients_country_idx" btree (country)
-Foreign-key constraints:
-    "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
-Access method: heap
+    postgres=# \d+ clients
+                                                            Table "public.clients"
+      Column  |         Type          | Collation | Nullable |               Default               | Storage  | Stats target | Description
+    ----------+-----------------------+-----------+----------+-------------------------------------+----------+--------------+-------------
+     id       | integer               |           | not null | nextval('clients_id_seq'::regclass) | plain    |              |
+     lastname | character varying(30) |           |          |                                     | extended |              |
+     country  | character varying(30) |           |          |                                     | extended |              |
+     order_id | integer               |           |          |                                     | plain    |              |
+    Indexes:
+        "clients_pkey" PRIMARY KEY, btree (id)
+        "clients_country_idx" btree (country)
+    Foreign-key constraints:
+        "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
+    Access method: heap
 
 #Список пользователей и прав
 
-     grantee      | table_catalog | table_name | privilege_type
-------------------+---------------+------------+----------------
- test_admin_user  | test_db       | clients    | DELETE
- test_admin_user  | test_db       | orders     | INSERT
- test_admin_user  | test_db       | orders     | SELECT
- test_admin_user  | test_db       | orders     | UPDATE
- test_admin_user  | test_db       | orders     | DELETE
- test_admin_user  | test_db       | orders     | TRUNCATE
- test_admin_user  | test_db       | orders     | REFERENCES
- test_admin_user  | test_db       | orders     | TRIGGER
- test_admin_user  | test_db       | clients    | INSERT
- test_admin_user  | test_db       | clients    | SELECT
- test_admin_user  | test_db       | clients    | UPDATE
- test_simple_user | test_db       | orders     | SELECT
- test_simple_user | test_db       | clients    | SELECT
- test_simple_user | test_db       | clients    | UPDATE
- test_simple_user | test_db       | clients    | DELETE
- test_simple_user | test_db       | orders     | INSERT
- test_simple_user | test_db       | clients    | INSERT
- test_simple_user | test_db       | orders     | UPDATE
- test_simple_user | test_db       | orders     | DELETE
+         grantee      | table_catalog | table_name | privilege_type
+    ------------------+---------------+------------+----------------
+     test_admin_user  | test_db       | clients    | DELETE
+     test_admin_user  | test_db       | orders     | INSERT
+     test_admin_user  | test_db       | orders     | SELECT
+     test_admin_user  | test_db       | orders     | UPDATE
+     test_admin_user  | test_db       | orders     | DELETE
+     test_admin_user  | test_db       | orders     | TRUNCATE
+     test_admin_user  | test_db       | orders     | REFERENCES
+     test_admin_user  | test_db       | orders     | TRIGGER
+     test_admin_user  | test_db       | clients    | INSERT
+     test_admin_user  | test_db       | clients    | SELECT
+     test_admin_user  | test_db       | clients    | UPDATE
+     test_simple_user | test_db       | orders     | SELECT
+     test_simple_user | test_db       | clients    | SELECT
+     test_simple_user | test_db       | clients    | UPDATE
+     test_simple_user | test_db       | clients    | DELETE
+     test_simple_user | test_db       | orders     | INSERT
+     test_simple_user | test_db       | clients    | INSERT
+     test_simple_user | test_db       | orders     | UPDATE
+     test_simple_user | test_db       | orders     | DELETE
 
 
 ## Задача 3
@@ -145,17 +145,17 @@ Access method: heap
 
 Ответ:
 
-test_db=# SELECT COUNT(*) FROM orders;
- count
--------
-     5
-(1 row)
+    SELECT COUNT(*) FROM orders;
+     count
+    -------
+         5
+    (1 row)
 
-test_db=# SELECT COUNT(*) FROM clients;
- count
--------
-     5
-(1 row)
+    SELECT COUNT(*) FROM clients;
+     count
+    -------
+         5
+    (1 row)
 
 
 ## Задача 4
@@ -180,24 +180,24 @@ test_db=# SELECT COUNT(*) FROM clients;
 
 #Запросы
 
-UPDATE clients
-SET order_id = (SELECT id FROM orders WHERE name = 'Книга')
-WHERE lastname = 'Иванов Иван Иванович';
-UPDATE clients
-SET order_id = (SELECT id FROM orders WHERE name = 'Монитор')
-WHERE lastname = 'Петров Петр Петрович';
-UPDATE clients
- SET order_id = (SELECT id FROM orders WHERE name = 'Гитара')
- WHERE lastname = 'Иоганн Себастьян Бах';
+    UPDATE clients
+    SET order_id = (SELECT id FROM orders WHERE name = 'Книга')
+    WHERE lastname = 'Иванов Иван Иванович';
+    UPDATE clients
+    SET order_id = (SELECT id FROM orders WHERE name = 'Монитор')
+    WHERE lastname = 'Петров Петр Петрович';
+    UPDATE clients
+    SET order_id = (SELECT id FROM orders WHERE name = 'Гитара')
+    WHERE lastname = 'Иоганн Себастьян Бах';
 
-SELECT * FROM clients WHERE order_id IS NOT NULL;
+    SELECT * FROM clients WHERE order_id IS NOT NULL;
 
- id |      last_name       | country | order_id
-----+----------------------+---------+----------
-  1 | Иванов Иван Иванович | USA     |        3
-  2 | Петров Петр Петрович | Canada  |        4
-  3 | Иоганн Себастьян Бах | Japan   |        5
-(3 rows)
+     id |      last_name       | country | order_id
+    ----+----------------------+---------+----------
+      1 | Иванов Иван Иванович | USA     |        3
+      2 | Петров Петр Петрович | Canada  |        4
+      3 | Иоганн Себастьян Бах | Japan   |        5
+    (3 rows)
 
 ## Задача 5
 
@@ -208,13 +208,13 @@ SELECT * FROM clients WHERE order_id IS NOT NULL;
 
 Ответ:
 
-EXPLAIN SELECT * FROM clients WHERE order_id IS NOT NULL;
-
-                         QUERY PLAN
-------------------------------------------------------------
- Seq Scan on clients  (cost=0.00..12.80 rows=279 width=258)
-   Filter: (order_id IS NOT NULL)
-(2 rows)
+    EXPLAIN SELECT * FROM clients WHERE order_id IS NOT NULL;
+    
+                             QUERY PLAN
+    ------------------------------------------------------------
+     Seq Scan on clients  (cost=0.00..12.80 rows=279 width=258)
+       Filter: (order_id IS NOT NULL)
+    (2 rows)
 
 cost - стоимость операции
 row - ожидаемое число строк
@@ -236,9 +236,9 @@ width - средняя ширина строки в байтах
 
 1. создаем дамп БД в простом текстовом формате
 
-pg_dump -U postgres test_db > /var/lib/postgresql/bckp/dump.sql
+    pg_dump -U postgres test_db > /var/lib/postgresql/bckp/dump.sql
 
 2. останавливаем старый контейнер и запускаем новый
 3. заходим в новый контейнер и восстанавливаем данные командой
 
-psql -U postgres test_db -f /var/lib/postgresql/bckp/dump.sql
+    psql -U postgres test_db -f /var/lib/postgresql/bckp/dump.sql
