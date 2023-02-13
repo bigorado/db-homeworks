@@ -41,7 +41,9 @@ postgres:12
 - список пользователей с правами над таблицами test_db
 
 Ответ:
-=============Список БД=============
+
+#Список БД
+
 postgres=# \l
                                     List of databases
    Name    |  Owner   | Encoding |  Collate   |   Ctype    |      Access privileges
@@ -55,7 +57,9 @@ postgres=# \l
            |          |          |            |            | postgres=CTc/postgres       +
            |          |          |            |            | test_admin_user=CTc/postgres
 (4 rows)
-=============Описание таблиц=============
+
+#Описание таблиц
+
 postgres=# \d+ orders
                                                        Table "public.orders"
  Column |         Type          | Collation | Nullable |              Default               | Storage  | Stats target | Description
@@ -84,7 +88,8 @@ Foreign-key constraints:
     "clients_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(id)
 Access method: heap
 
-=============Список пользователей и прав=============
+#Список пользователей и прав
+
      grantee      | table_catalog | table_name | privilege_type
 ------------------+---------------+------------+----------------
  test_admin_user  | test_db       | clients    | DELETE
@@ -172,7 +177,9 @@ test_db=# SELECT COUNT(*) FROM clients;
 Подсказк - используйте директиву `UPDATE`.
 
 Ответ:
-=============Запросы=============
+
+#Запросы
+
 UPDATE clients
 SET order_id = (SELECT id FROM orders WHERE name = 'Книга')
 WHERE lastname = 'Иванов Иван Иванович';
