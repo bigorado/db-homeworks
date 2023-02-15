@@ -19,6 +19,7 @@
 
 Ответы:
 1.
+
     mysql> status
     --------------
     mysql  Ver 8.0.23 for Linux on x86_64 (MySQL Community Server - GPL)
@@ -93,6 +94,7 @@
 
 Ответы:
 1.
+
     mysql> SHOW TABLE STATUS\G
     *************************** 1. row ***************************
                Name: orders
@@ -114,7 +116,9 @@
      Create_options:
             Comment:
     1 row in set (0.02 sec)
+
 2.
+
     SET profiling = 1;
     ALTER TABLE test_db.orders ENGINE = MyISAM;
     ALTER TABLE test_db.orders ENGINE = InnoDB;
