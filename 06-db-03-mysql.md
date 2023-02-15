@@ -44,6 +44,7 @@
     Threads: 2  Questions: 106  Slow queries: 0  Opens: 137  Flush tables: 3  Open tables: 55  Queries per second avg: 0.127
     --------------
 2.
+
     mysql> SELECT COUNT(*) FROM orders WHERE price > 300;
     +----------+
     | COUNT(*) |
@@ -51,7 +52,6 @@
     |        1 |
     +----------+
     1 row in set (0.01 sec)
-
 
 ## Задача 2
 
