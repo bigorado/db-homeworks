@@ -97,7 +97,8 @@
         title character varying(80) NOT NULL UNIQUE,
         price integer DEFAULT 0
     );
-....
+
+
     CREATE TABLE public.orders_price_gt_499 (
         id integer DEFAULT nextval('public.orders_new_id_seq'::regclass) NOT NULL,
         title character varying(80) NOT NULL UNIQUE,
