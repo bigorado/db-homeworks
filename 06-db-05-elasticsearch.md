@@ -34,24 +34,17 @@
 Ответы:
 
     FROM centos:7
-....
     RUN yum install wget perl-Digest-SHA -y
-....
     RUN groupadd -r elasticsearch && \
         useradd -r -g  elasticsearch elasticsearch
     USER elasticsearch
-....
     WORKDIR /home/elasticsearch
-....
     RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.11.1-linux-x86_64.tar.gz  && \
         wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.11.1-linux-x86_64.tar.gz.sha512 && \
         shasum -a 512 -c elasticsearch-7.11.1-linux-x86_64.tar.gz.sha512 && \
         tar -xzf elasticsearch-7.11.1-linux-x86_64.tar.gz
-....
     COPY ./elasticsearch.yml ./elasticsearch-7.11.1/config
-....
     EXPOSE 9200
-....
     ENTRYPOINT ./elasticsearch-7.11.1/bin/elasticsearch
 
 
@@ -59,7 +52,6 @@
 
 
     curl -X GET "localhost:9200/?pretty"
-....
     {
       "name" : "netology_test",
       "cluster_name" : "elasticsearch",
@@ -139,7 +131,6 @@ Dockerfile
 Список индексов
 
     curl -X GET -u undefined:$ESPASS "localhost:9200/_cat/indices/ind-*?v=true&s=index&pretty"
-....
     health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
     green  open   ind-1 esoOQBzkSB62VBrWXJvE9w   1   0          0            0       208b           208b
     yellow open   ind-2 tdsm3LIKRo2BWfz11sYrLg   2   1          0            0       416b           416b
@@ -149,7 +140,6 @@ Dockerfile
 Состояние
 
     curl -X GET -u undefined:$ESPASS "localhost:9200/_cluster/health?pretty"
-....
     {
       "cluster_name" : "elasticsearch",
       "status" : "yellow",
@@ -216,7 +206,6 @@ Dockerfile
       }
     }
     '
-....
     {
       "acknowledged" : true
     }
@@ -233,7 +222,6 @@ Dockerfile
 Создайте snapshot состояния кластера elasticsearch
 
     ls -l elasticsearch-7.11.1/snapshots/
-....
     total 48
     -rw-r--r-- 1 elasticsearch elasticsearch   434 Feb 18 20:31 index-0
     -rw-r--r-- 1 elasticsearch elasticsearch     8 Feb 18 20:31 index.latest
