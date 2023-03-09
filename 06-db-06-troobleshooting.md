@@ -88,3 +88,7 @@ InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during qu
 2: ядро не будет резервировать больше памяти, чем указано в параметре overcommit_ratio
 
 Как вариант 2 пункт.
+
+Доработка:
+
+Выставить once core just -1000, сделать настройку конфигурации postgres где указать наше количество ресурсов, сколько их и сколько допустимо потреблять.
