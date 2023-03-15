@@ -93,3 +93,12 @@ InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during qu
 
 Выставить once core just -1000, сделать настройку конфигурации postgres где указать наше количество ресурсов, сколько их и сколько допустимо потреблять.
 А нельзя потому что oom-killer всё равно может "постучаться в двери".
+
+Доработка №100500:
+
+ДАНО:
+Сервер 1гб ОЗУ, 15гб HDD, 1 ядра
+ВЫДЕЛЯЕМ для минимизации расхода по памяти:
+shared_buffers  = 256MB
+work_mem = 4MB
+maintenance_work_mem = 64MB
